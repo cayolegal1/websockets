@@ -1,0 +1,24 @@
+Emisión a todos los clientes conectados
+
+Hay dos tipos de emisiones, una emisión básica (o a solo la persona que se ha conectado) y emisión a todos los clientes conectados al producirse cierto evento. 
+
+Estuvimos haciendo anteriormente una emisión básica, en donde le estábamos pasando solo al cliente actual los eventos que ocurrían
+
+    index.js:
+      const io = new Server(httpServer);
+      
+      io.on('connection', (socket) => {
+        console.log('socket Id: ', socket.id);
+      });
+
+Pero también tenemos la posibilidad de que cuando un cliente se conecta, que el evento se dispare en todos los otros clientes conectados. La forma de implementación es muy simple, mientras que en una conexión básica se pasa el evento del evento como parámetro, la forma de emitir un evento a todos los clientes conectados es emitiendo con la instancia misma del servidor io
+
+    index.js:
+      const io = new Server(httpServer);
+      
+      io.on('connection', (socket) => {
+        console.log('socket Id: ', socket.id);
+        io.emit("inform_connection_everyone", `${socket.id} acaba de conectarse`);
+      });
+
+Entonces cada vez que un nuevo cliente se conecte, de esta forma le informamos a todos los otros conectados a ese evento, puede ser útil si tenemos una app de mensajería y queremos informar a todos que tal persona acaba de conectarse para que puedan charlar con el.
