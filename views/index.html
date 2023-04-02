@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,12 +8,26 @@
     <title>Document</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
     <h1>Socket io</h1>
-    <p id="welcome"></p>
-    <button>Press me</button>
-    <div id="circle"></div>
+    <div class="room room1">
+        <p>Room 1</p>
+    </div>
+    <div class="room room2">
+        <p>Room 2</p>
+    </div>
+    <div class="room room3">
+        <p>Room 3</p>
+    </div>
+    <ul>
+        <li><button id="room1">Room 1</button></li>
+        <li><button id="room2">Room 2</button></li>
+        <li><button id="room3">Room 3</button></li>
+    </ul>
+    <input type="button" id="message" value="Send new message" />
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="./js/index.js"></script>
+
 </html>

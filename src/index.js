@@ -12,24 +12,31 @@ const app = express();
 /* instancia del servidor pasando como parámetro express */
 const httpServer = createServer(app);
 
-/* instancia del server de socket.io, que recibe en el constructor un server, en nuestro casi tiene que ser http */
+/* instancia del server de socket.io, que recibe en el constructor un server, en nuestro caso tiene que ser http */
 const io = new Server(httpServer);
 
 
 app.use("/view", express.static("views"));
 
-
 io.on("connection", (socket) => {
-    console.log("socket Id: ", socket.id);
-    socket.emit("welcome", "Welcome to our app!");
-    socket.on("gratitude", (data) => {console.log(data)});
-    socket.on("greeting", (data) => console.log(data));
-
-    /* recibiendo el evento de circle move y emitiendo el valor que nos llega a todos */
-    socket.on("circle_move", (data) =>  {
-        io.emit("circle position", data)
-    })
     io.emit("show_user_connection", `${socket.id} acaba de conectarse`);
+
+    socket.connectedRoom = null;
+    socket.on("channel_join", (channel) => {
+        if(socket.connectedRoom) {
+          socket.leave(socket.connectedRoom);
+        }
+        socket.join(channel);
+        socket.connectedRoom = channel;
+    });
+
+    socket.on("message", (receivedMessage) => {
+        io.to(socket.connectedRoom).emit("message", {
+            channel: socket.connectedRoom, 
+            message: receivedMessage
+        });
+    })
+
 });
 
 httpServer.listen(3030)
