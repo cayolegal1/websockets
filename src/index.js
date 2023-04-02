@@ -15,28 +15,24 @@ const httpServer = createServer(app);
 /* instancia del server de socket.io, que recibe en el constructor un server, en nuestro caso tiene que ser http */
 const io = new Server(httpServer);
 
-
 app.use("/view", express.static("views"));
 
-io.on("connection", (socket) => {
-    io.emit("show_user_connection", `${socket.id} acaba de conectarse`);
+const admins = io.of("admin");
+const clients = io.of("client");
 
-    socket.connectedRoom = null;
-    socket.on("channel_join", (channel) => {
-        if(socket.connectedRoom) {
-          socket.leave(socket.connectedRoom);
-        }
-        socket.join(channel);
-        socket.connectedRoom = channel;
+admins.on("connection", (socket) => {
+    socket.emit("welcome", {
+        message: "welcome admin", 
+        role: "admin"
     });
+})
 
-    socket.on("message", (receivedMessage) => {
-        io.to(socket.connectedRoom).emit("message", {
-            channel: socket.connectedRoom, 
-            message: receivedMessage
-        });
-    })
+clients.on("connection", (socket) => {
+    socket.emit("welcome", {
+        message: "welcole client",
+        role: "client"
+    });
+})
 
-});
 
 httpServer.listen(3030)
