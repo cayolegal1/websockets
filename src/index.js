@@ -1,4 +1,5 @@
-const path = require("path");
+/* middlewares */
+const {authorizationMiddleware, loggerMiddleware} = require('./middlewares')
 
 /* servidor de socket.io */
 const {Server} = require("socket.io");
@@ -15,24 +16,27 @@ const httpServer = createServer(app);
 /* instancia del server de socket.io, que recibe en el constructor un server, en nuestro caso tiene que ser http */
 const io = new Server(httpServer);
 
+/* middleware para verificar si esta autorizado */
+io.use(authorizationMiddleware);
+
+/* middleware para mostrar y lanzar errores */
+io.use(loggerMiddleware);
+
 app.use("/view", express.static("views"));
 
-const admins = io.of("admin");
-const clients = io.of("client");
 
-admins.on("connection", (socket) => {
-    socket.emit("welcome", {
-        message: "welcome admin", 
-        role: "admin"
-    });
+io.on("connection", (socket) => {
+    try {
+        console.log("socket id", socket.id);
+        socket.emit("test", "testtt");
+        socket.on('error', (error) => {
+            console.log('Error occurred:', error);
+            socket.emit('error', { message: error.message });
+        });
+    } catch(error) {console.log(error)}
 })
 
-clients.on("connection", (socket) => {
-    socket.emit("welcome", {
-        message: "welcole client",
-        role: "client"
-    });
-})
+
 
 
 httpServer.listen(3030)

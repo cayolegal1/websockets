@@ -1,18 +1,20 @@
-const promptRole = prompt("Choose your role");
-const socket = io(`/${promptRole}`);
+const client = io({
+    auth: {
+        token: "Hello worldd"
+    }
+});
 
 
-
-socket.on("connect", () => {
-    console.log(`Client connected ${socket.id}`)
+client.on("connection", (socket) => {
+    console.log(socket.id)
 })
 
-socket.on("welcome", (res) => {
-    console.log(res.message);
-    document.getElementById("role").textContent = res.role;
+client.on("connect_error", error => {
+    console.error(error);
+    console.log(error.data);
+    alert(JSON.stringify(error.data))
 })
 
-
-
+client.on("test", msg => console.log(msg))
 
 
