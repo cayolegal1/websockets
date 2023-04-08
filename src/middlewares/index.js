@@ -5,7 +5,7 @@ const authorizationMiddleware = (socket, next) => {
     }
     const error = new Error("Not authorized");
     error.data = {status: 401,  message: "For this feature you must be an admin"};
-    next(error);
+    next();
 }
 
 const loggerMiddleware = (socket, next) => {

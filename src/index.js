@@ -1,3 +1,5 @@
+process.env.DEBUG = "engine, socket.io:socket, socket.io:client";
+
 /* middlewares */
 const {authorizationMiddleware, loggerMiddleware} = require('./middlewares')
 
@@ -20,7 +22,7 @@ const io = new Server(httpServer);
 io.use(authorizationMiddleware);
 
 /* middleware para mostrar y lanzar errores */
-io.use(loggerMiddleware);
+// io.use(loggerMiddleware);
 
 app.use("/view", express.static("views"));
 

@@ -1,6 +1,6 @@
 const client = io({
     auth: {
-        token: "Hello worldd"
+        token: "Hello world"
     }
 });
 
@@ -15,6 +15,11 @@ client.on("connect_error", error => {
     alert(JSON.stringify(error.data))
 })
 
-client.on("test", msg => console.log(msg))
+client.emit("test", {test: true})
+
+client.on("test", msg => {
+    console.log(msg);
+    client.emit("jeje", "hola hola")
+})
 
 
